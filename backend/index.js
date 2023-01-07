@@ -2,7 +2,11 @@ import axios from "axios"
 import fs, { readSync } from "fs";
 import xml2js from "xml2js"
 import express from "express";
+import cors from 'cors'
+
 const app=express()
+app.use(cors())
+
 
 app.get("/",(req,res)=>{
     res.json(JSON.parse(fs.readFileSync("./db.json")))
@@ -34,7 +38,6 @@ async function get_owner_data(serialNumber){
 
 async function write_data(d){
     const owner= await get_owner_data(d.serialNumber)
-    console.log(owner)
     let db
     if(fs.existsSync('./db.json')){
         db=JSON.parse(fs.readFileSync("./db.json"))
