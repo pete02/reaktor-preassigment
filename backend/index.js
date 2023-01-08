@@ -9,7 +9,12 @@ app.use(cors())
 
 
 app.get("/",(req,res)=>{
-    res.json(JSON.parse(fs.readFileSync("./db.json")))
+    if(fs.existsSync("./db.json")){
+        res.json(JSON.parse(fs.readFileSync("./db.json")))
+    }else{
+        res.json([{}])
+    }
+    
 })
 
 app.listen(3000)
@@ -20,7 +25,8 @@ let drones
 function distance(drone){
     let x=250000-drone.positionX[0]
     let y=250000-drone.positionY[0]
-    drone.distance=Math.sqrt((x*x)+(y*y))
+    let coordDist=Math.sqrt((x*x)+(y*y))
+    drone.distance=Math.round(coordDist/1000)
     return drone
 }
 
@@ -37,6 +43,7 @@ async function get_owner_data(serialNumber){
 }
 
 async function write_data(d){
+    
     const owner= await get_owner_data(d.serialNumber)
     let db
     if(fs.existsSync('./db.json')){
@@ -45,20 +52,33 @@ async function write_data(d){
         db=[]
     }
     db=db.filter(a=>Date.now()-a.timestamp<600000)
-    db.push({"drone":d,"owner":owner,"timestamp":Date.now()})
+    let exists=db.filter(dr=>dr.drone.serialNumber[0]==d.serialNumber[0])
+    console.log(exists.length)
+    if(exists.length==0){
+        db.push({"drone":d,"owner":owner,"timestamp":Date.now()})
+    }
+    else{
+        exists.forEach(e => {
+            db.splice(db.indexOf(e),1)
+        });
+        db.push({"drone":d,"owner":owner,"timestamp":Date.now()})
+    }
+   
     return fs.writeFileSync("./db.json",JSON.stringify(db))
 }
 
 function get_drones(){
 
     axios.get("http://assignments.reaktor.com/birdnest/drones").then(r=>{
+    console.time()
     parser.parseString(r.data, async function (err, result) {
         drones=result.report.capture[0].drone
         drones=drones.map(d=>distance(d))
-        drones=drones.filter(d=>d.distance<=100000)
+        drones=drones.filter(d=>d.distance<=100)
         drones=drones.map(async d=>{
             write_data(d)
         })
+        console.timeEnd()
     })
     }).catch(e=>{
         console.log("error in getting drone data")
