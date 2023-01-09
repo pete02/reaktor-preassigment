@@ -11,7 +11,7 @@ function App() {
   //after 2 seconds fetch data from backend, then call settumeout again
   useEffect(()=>{
     setTimeout(()=>{
-      axios.get("http://localhost:3000").then(r=>{
+      axios.get("/api").then(r=>{
         let tempdrones=r.data
         tempdrones.sort((a,b)=>a.drone.distance-b.drone.distance)
         setNum(tempdrones.length)

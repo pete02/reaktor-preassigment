@@ -61,7 +61,6 @@ async function write_data(d){
 //remove all drones that are further than 100m form the nest, then
 //call write_data function for all drones
 export function get_drones(){
-    console.time()
     axios.get("http://assignments.reaktor.com/birdnest/drones").then(r=>{
 
     parser.parseString(r.data, async function (err, result) {
@@ -71,7 +70,6 @@ export function get_drones(){
         drones=drones.map(async d=>{
             write_data(d)
         })
-        console.timeEnd()
     })
 
     }).catch(e=>{

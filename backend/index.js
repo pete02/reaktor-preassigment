@@ -7,14 +7,16 @@ const app=express()
 app.use(cors())
 
 //serve backend
-app.get("/",(req,res)=>{
+app.get("/api",(req,res)=>{
     if(fs.existsSync("./db.json")){
         res.json(JSON.parse(fs.readFileSync("./db.json")))
     }else{
-        res.json([{}])
+        res.json([])
     }
     
 })
+
+app.use(express.static('build'))
 
 app.listen(3000)
 
