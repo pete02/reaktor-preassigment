@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build":"docker build --tag lumilukko/Reaktor ."
+    "build":"docker build --tag lumilukko/reaktor ."
   },
   "author": "",
   "license": "ISC",
