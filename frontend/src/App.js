@@ -7,8 +7,9 @@ import { useEffect, useState } from 'react';
 function App() {
   const [drones,setDrones]= useState([])
   const [num,setNum]=useState([])
+
+  //after 2 seconds fetch data from backend, then call settumeout again
   useEffect(()=>{
-    
     setTimeout(()=>{
       axios.get("http://localhost:3000").then(r=>{
         let tempdrones=r.data
@@ -19,10 +20,13 @@ function App() {
     },2000)
   },[drones])
 
+  //check, that the drone has an owner, if there is, return owner's contact data
   const get_owner=(d)=>{
     if(d.owner&& d.owner.firstName)
     return(<div>{d.owner.firstName+" "+d.owner.lastName}<br/>{d.owner.email}<br/>{d.owner.phoneNumber}</div>)
   }
+
+
   return (
     <div className="App">
       <header className="App-header">
