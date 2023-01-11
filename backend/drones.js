@@ -74,6 +74,7 @@ export function get_drones(){
 
     }).catch(e=>{
         console.log("error in getting drone data")
+        console.log(e)
     })
     
 }

@@ -8,6 +8,7 @@ app.use(cors())
 
 //serve backend
 app.get("/api",(req,res)=>{
+    console.log("api called")
     if(fs.existsSync("./db.json")){
         res.json(JSON.parse(fs.readFileSync("./db.json")))
     }else{
